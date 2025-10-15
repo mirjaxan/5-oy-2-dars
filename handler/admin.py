@@ -7,16 +7,13 @@ from database import is_admin
 from buttons import adminmenu_kb, menu_kb
 from shared import admin_reply_target
 
-# 🔹 Router yaratish
 admin_router = Router()
 
-# 🔹 Atrof-muhitdan ADMIN_CHATID olish
 env = Env()
 env.read_env()
 Admin_ID = env.str("ADMIN_CHATID")
 
 
-# 🟢 /admin — admin menyusiga kirish
 @admin_router.message(Command("admin"))
 async def admin_handler(message: Message):
     if is_admin(message.from_user.id):
@@ -25,13 +22,11 @@ async def admin_handler(message: Message):
         await message.answer("⛔ Sizda admin huquqi mavjud emas.")
 
 
-# 🟢 /user — foydalanuvchi menyusiga qaytish
 @admin_router.message(Command("user"))
 async def get_user(message: Message):
     await message.answer("👤 Siz foydalanuvchi rejimidasiz.", reply_markup=menu_kb)
 
 
-# 🟢 /contact_admin — foydalanuvchi admin bilan bog‘lanadi
 @admin_router.message(Command("contact_admin"))
 async def contact_admin(message: Message):
     try:
@@ -41,7 +36,6 @@ async def contact_admin(message: Message):
         await message.answer(f"⚠️ Xatolik: {e}")
 
 
-# 🟢 Adminning reply (javob) xabari
 @admin_router.message(F.reply_to_message, lambda m: str(m.from_user.id) == str(Admin_ID))
 async def reply_to_user(message: Message):
     replied = message.reply_to_message
@@ -59,7 +53,6 @@ async def reply_to_user(message: Message):
             await message.answer(f"⚠️ Xatolik: {e}")
 
 
-# 🟢 Agar admin oldingi reply maqsadini saqlagan bo‘lsa
 @admin_router.message(F.text, lambda m: str(m.from_user.id) == str(Admin_ID) and "reply_to" in admin_reply_target)
 async def handle_admin_reply(message: Message):
     try:
@@ -71,7 +64,6 @@ async def handle_admin_reply(message: Message):
         )
         await message.answer("✅ Javob foydalanuvchiga yuborildi.")
 
-        # qayta ishlatmaslik uchun o‘chiramiz
         if "reply_to" in admin_reply_target:
             del admin_reply_target["reply_to"]
 
@@ -81,7 +73,6 @@ async def handle_admin_reply(message: Message):
             del admin_reply_target["reply_to"]
 
 
-# 🟢 Foydalanuvchi xabar yuborganda — admin ga yetkazish
 @admin_router.message(F.text, lambda m: "contacting_user" in admin_reply_target and m.from_user.id == admin_reply_target["contacting_user"])
 async def send_user_message_to_admin(message: Message):
     try:
