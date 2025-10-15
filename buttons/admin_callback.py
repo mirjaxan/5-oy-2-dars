@@ -9,7 +9,7 @@ from shared import admin_reply_target
 env = Env()
 env.read_env()
 Admin_ID = env.str("ADMIN_CHATID")
-
+print("salom")
 @admin_router.callback_query(F.data.startswith("reply_"))
 async def admin_reply_start(callback: CallbackQuery):
     user_id = int(callback.data.split("_")[-1])
